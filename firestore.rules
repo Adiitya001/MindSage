@@ -1,0 +1,67 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper function to check if user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Helper function to check if user is admin
+    function isAdmin() {
+      return isAuthenticated() && 
+             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+    
+    // Helper function to check if user owns the resource
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    // Users collection
+    // - Users can read their own document
+    // - Users can update their own document (preferences, name, etc.)
+    // - Admin can read/write any user document
+    match /users/{userId} {
+      allow read: if isOwner(userId) || isAdmin();
+      allow create: if isOwner(userId); // Users create their own doc on first login
+      allow update: if isOwner(userId) || isAdmin();
+      allow delete: if isAdmin();
+    }
+    
+    // Therapists collection
+    // - Public read access for active therapists only
+    // - Write access restricted to admin (via Admin SDK only - rules as backup)
+    match /therapists/{therapistId} {
+      allow read: if resource.data.isActive == true;
+      allow create: if isAdmin();
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+    
+    // Community posts collection
+    // - Public read access for approved, non-hidden posts only
+    // - Authenticated users can create posts (defaults to isApproved = false)
+    // - Only admin can update/approve posts (via Admin SDK)
+    match /communityPosts/{postId} {
+      allow read: if resource.data.isApproved == true && resource.data.isHidden == false;
+      allow create: if isAuthenticated() && 
+                       request.resource.data.keys().hasAll(['authorId', 'content', 'tag', 'isAnonymous', 'isApproved', 'createdAt']) &&
+                       request.resource.data.isApproved == false; // Must default to unapproved
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+    
+    // Reactions collection
+    // - Authenticated users can read reactions
+    // - Authenticated users can create reactions
+    // - Admin can update/delete reactions (via Admin SDK)
+    match /reactions/{reactionId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() &&
+                       request.resource.data.keys().hasAll(['postId', 'userId', 'type', 'createdAt']);
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+  }
+}
