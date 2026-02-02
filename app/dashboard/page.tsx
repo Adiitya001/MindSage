@@ -9,22 +9,11 @@ import { ThemeToggle } from "@/components/theme-toggle"
 import { AccountIcon } from "@/components/account-icon"
 import { ProtectedRoute } from "@/lib/components/ProtectedRoute"
 import { useAuth } from "@/lib/contexts/AuthContext"
-import { apiGet } from "@/lib/api/client"
-
-interface UserProfile {
-  id: string
-  email: string
-  name: string | null
-  preferredMode: "gita" | "quran" | "bible" | "none"
-  avatarId: string
-  createdAt: string | null
-}
 
 function DashboardContent() {
-  const { user, getIdToken } = useAuth()
+  const { user } = useAuth()
   const [userName, setUserName] = useState<string | null>(null)
 
-  // Get greeting based on time of day
   const getGreeting = () => {
     const hour = new Date().getHours()
     if (hour < 12) return "Good morning"
@@ -32,11 +21,7 @@ function DashboardContent() {
     return "Good evening"
   }
 
-  // TEMPORARILY DISABLED: Profile fetch for auth isolation testing
-  // Fetch user's name from profile
   useEffect(() => {
-    // DISABLED FOR AUTH TESTING - Profile fetch temporarily disabled
-    // Use Firebase user data directly (no profile API calls)
     if (user) {
       if (user.displayName) {
         setUserName(user.displayName)
@@ -46,12 +31,10 @@ function DashboardContent() {
     }
   }, [user])
 
-  // Display name: profile name > displayName > email username > "there"
   const displayName = userName || user?.displayName || (user?.email ? user.email.split("@")[0] : "there")
 
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center p-6 pb-32">
-      {/* Background Watermark */}
       <div className="fixed inset-0 pointer-events-none opacity-[0.02] flex items-center justify-center">
         <MindSageLogo size={800} />
       </div>

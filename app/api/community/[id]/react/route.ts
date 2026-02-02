@@ -12,8 +12,6 @@ export async function POST(
     const { id: postId } = await params
     const body = await req.json()
     const { type } = createReactionSchema.parse(body)
-
-    // Verify post exists and is approved
     const postDoc = await adminDb.collection("communityPosts").doc(postId).get()
 
     if (!postDoc.exists) {
@@ -30,8 +28,6 @@ export async function POST(
         { status: 404 }
       )
     }
-
-    // Check if reaction already exists
     let reactionQuery = adminDb
       .collection("reactions")
       .where("postId", "==", postId)

@@ -38,16 +38,7 @@ function ProfilePageContent() {
   const [isEditing, setIsEditing] = useState(false)
   const [error, setError] = useState("")
 
-  // TEMPORARILY DISABLED: Profile fetching for auth isolation testing
-  // Fetch profile ONLY when page is opened (user is guaranteed to exist via ProtectedRoute)
   useEffect(() => {
-    // DISABLED FOR AUTH TESTING - Profile fetch temporarily disabled
-    // async function fetchOrCreateProfile() {
-    //   ... profile fetch logic disabled ...
-    // }
-    // fetchOrCreateProfile()
-    
-    // Use Firebase user data directly (no profile API calls)
     if (user) {
       setLoading(false)
       setProfile({
@@ -84,26 +75,10 @@ function ProfilePageContent() {
         updates.avatarId = selectedAvatarId
       }
 
-      // TEMPORARILY DISABLED: Profile save for auth isolation testing
-      // if (Object.keys(updates).length > 0) {
-      //   const token = await getIdToken()
-      //   if (!token) {
-      //     throw new Error("Unable to get authentication token")
-      //   }
-      //   const updated = await apiPatch<UserProfile>("/api/me/preferences", updates, token, true)
-      //   setProfile(updated)
-      //   setSelectedAvatarId(updated.avatarId)
-      //   setIsEditing(false)
-      // } else {
-      //   setIsEditing(false)
-      // }
-      
-      // For now, just update local state (no API call)
       if (Object.keys(updates).length > 0) {
         if (updates.name) setEditName(updates.name)
         if (updates.preferredMode) setEditMode(updates.preferredMode)
         if (updates.avatarId) setSelectedAvatarId(updates.avatarId)
-        // Update local profile state
         if (profile) {
           setProfile({
             ...profile,
@@ -114,12 +89,8 @@ function ProfilePageContent() {
       setIsEditing(false)
     } catch (err: any) {
       const errorMessage = err.message || "Failed to update profile"
-      // Filter out "Unauthorized" errors - if Firebase user exists, they are authenticated
       const isUnauthorizedError = errorMessage.toLowerCase().includes("unauthorized")
-      
       if (isUnauthorizedError) {
-        // User is authenticated (ProtectedRoute ensures this), so ignore auth errors
-        // Show neutral message instead
         setError("Could not save changes. Please try again.")
       } else {
         setError(errorMessage)
@@ -144,7 +115,6 @@ function ProfilePageContent() {
     return date.toLocaleDateString("en-US", { month: "long", year: "numeric" })
   }
 
-  // Show loading state
   if (loading) {
     return (
       <main className="min-h-screen bg-background text-foreground pb-24 flex items-center justify-center">
@@ -153,7 +123,6 @@ function ProfilePageContent() {
     )
   }
 
-  // Always show profile page - use Firebase user data if profile fetch failed
   const displayProfile: UserProfile = profile || {
     id: user?.uid || "",
     email: user?.email || "",
@@ -191,7 +160,6 @@ function ProfilePageContent() {
           </div>
         )}
 
-        {/* Preferences Card */}
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
           <Card className="border-none bg-muted/30">
             <CardHeader>

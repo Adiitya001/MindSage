@@ -1,5 +1,3 @@
-// Input validation schemas using Zod
-
 import { z } from "zod"
 
 export const preferredModeSchema = z.enum(["gita", "quran", "bible", "none"])

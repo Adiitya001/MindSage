@@ -23,28 +23,16 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
-/**
- * AuthProvider - Manages Firebase authentication state only
- * - Uses onAuthStateChanged to track user
- * - Exposes user and loading state
- * - Provides auth methods (signup, login, logout)
- * - Does NOT perform navigation
- * - Does NOT fetch profile data
- */
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // Ensure auth is available before setting up listener
     if (!auth) {
       console.error("Firebase auth not initialized")
       setLoading(false)
       return
     }
-
-    // Listen for auth state changes
-    // onAuthStateChanged fires immediately with current user, then on every change
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setUser(user)
       setLoading(false)
@@ -56,8 +44,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signup = async (email: string, password: string, name?: string) => {
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password)
-      
-      // Update display name if provided
       if (name && userCredential.user) {
         await updateProfile(userCredential.user, { displayName: name })
       }
@@ -79,7 +65,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const provider = new GoogleAuthProvider()
       await signInWithPopup(auth, provider)
     } catch (error: any) {
-      // Preserve Firebase error codes for better error handling
       const err = new Error(error.message || "Google login failed")
       ;(err as any).code = error.code
       throw err
@@ -103,8 +88,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return null
       }
     }
-
-    // Fallback to auth.currentUser
     if (auth && auth.currentUser) {
       try {
         return await auth.currentUser.getIdToken(true)

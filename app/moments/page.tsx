@@ -15,7 +15,6 @@ import {
 } from "@/components/ui/dialog"
 import { Calendar, Sparkles } from "lucide-react"
 
-// Mock journal entry data
 interface JournalEntry {
   id: string
   date: Date
@@ -23,7 +22,6 @@ interface JournalEntry {
   preview: string // First few lines for preview
 }
 
-// Generate mock entries from the past
 const generateMockEntries = (): JournalEntry[] => {
   const entries: JournalEntry[] = []
   const today = new Date()

@@ -1,8 +1,3 @@
-/**
- * Predefined avatar system
- * Avatars are identified by IDs, stored in user profile
- */
-
 export type AvatarId = "avatar-1" | "avatar-2" | "avatar-3" | "avatar-4" | "avatar-5" | "avatar-6" | "avatar-7" | "avatar-8"
 
 export const AVATARS: { id: AvatarId; emoji: string; name: string }[] = [

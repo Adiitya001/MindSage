@@ -13,11 +13,8 @@ export async function GET(req: NextRequest) {
       )
     }
 
-    // getCurrentUser already creates the user if it doesn't exist, so we can directly fetch
     const userDoc = await adminDb.collection("users").doc(user.id).get()
-
     if (!userDoc.exists) {
-      // This should rarely happen since getCurrentUser creates the user, but handle it gracefully
       return NextResponse.json(
         { error: "User not found" },
         { status: 404 }
@@ -25,8 +22,6 @@ export async function GET(req: NextRequest) {
     }
 
     const userData = userDoc.data()
-    
-    // Handle Firestore Timestamp serialization
     let createdAt = null
     if (userData?.createdAt) {
       if (userData.createdAt.toDate && typeof userData.createdAt.toDate === "function") {

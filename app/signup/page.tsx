@@ -42,7 +42,6 @@ export default function SignupPage() {
       await loginWithGoogle()
       router.push("/dashboard")
     } catch (err: any) {
-      // Handle popup-blocked error specifically
       if (err.code === "auth/popup-blocked" || err.message?.includes("popup-blocked")) {
         setError("Popup was blocked. Please allow popups for this site and try again.")
       } else if (err.code === "auth/popup-closed-by-user" || err.message?.includes("popup-closed")) {
@@ -57,7 +56,6 @@ export default function SignupPage() {
 
   return (
     <main className="min-h-screen flex items-center justify-center p-6 bg-background relative overflow-hidden">
-      {/* Background Watermark */}
       <div className="absolute inset-0 pointer-events-none opacity-[0.02] flex items-center justify-center">
         <MindSageLogo size={600} />
       </div>

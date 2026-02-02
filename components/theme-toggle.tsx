@@ -6,10 +6,8 @@ import { useTheme } from "next-themes"
 import { Button } from "@/components/ui/button"
 
 export function ThemeToggle() {
-  const { setTheme, theme, resolvedTheme } = useTheme() // added resolvedTheme for more accurate toggle state
+  const { setTheme, resolvedTheme } = useTheme()
   const [mounted, setMounted] = React.useState(false)
-
-  // Avoid hydration mismatch by only rendering after mount
   React.useEffect(() => {
     setMounted(true)
   }, [])

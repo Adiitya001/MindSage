@@ -1,4 +1,3 @@
-// Firebase Client SDK (for client-side use)
 import { initializeApp, getApps, FirebaseApp } from "firebase/app"
 import { getAuth, Auth } from "firebase/auth"
 import { getFirestore, Firestore } from "firebase/firestore"
@@ -11,8 +10,6 @@ const firebaseConfig = {
   messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 }
-
-// Initialize Firebase app
 let app: FirebaseApp | undefined
 if (typeof window !== "undefined") {
   if (getApps().length === 0) {
@@ -21,7 +18,5 @@ if (typeof window !== "undefined") {
     app = getApps()[0]
   }
 }
-
-// Initialize auth and firestore (only on client)
 export const auth = typeof window !== "undefined" && app ? getAuth(app) : (null as any as Auth)
 export const db = typeof window !== "undefined" && app ? getFirestore(app) : (null as any as Firestore)

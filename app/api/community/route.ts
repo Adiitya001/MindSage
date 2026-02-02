@@ -7,8 +7,6 @@ export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url)
     const tag = searchParams.get("tag")
-
-    // Build query for approved, non-hidden posts
     let query = adminDb
       .collection("communityPosts")
       .where("isApproved", "==", true)
@@ -22,8 +20,6 @@ export async function GET(req: NextRequest) {
       .orderBy("createdAt", "desc")
       .limit(50)
       .get()
-
-    // Get all posts and fetch reaction counts
     const posts = await Promise.all(
       postsSnapshot.docs.map(async (doc) => {
         const data = doc.data()
@@ -33,8 +29,6 @@ export async function GET(req: NextRequest) {
           .collection("reactions")
           .where("postId", "==", doc.id)
           .get()
-
-        // Get author if not anonymous
         let author = null
         if (!data.isAnonymous && data.authorId) {
           const authorDoc = await adminDb

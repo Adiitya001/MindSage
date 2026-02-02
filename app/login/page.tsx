@@ -24,10 +24,7 @@ export default function LoginPage() {
 
     try {
       await login(email, password)
-      
-      // TEST: Call auth-check endpoint to verify token works
       try {
-        // Wait a bit for auth state to update
         await new Promise(resolve => setTimeout(resolve, 500))
         const token = await getIdToken()
         if (token) {
@@ -50,8 +47,6 @@ export default function LoginPage() {
       } catch (authCheckError) {
         console.error("❌ AUTH CHECK ERROR:", authCheckError)
       }
-      
-      // On success, redirect to home
       router.replace("/dashboard")
     } catch (err: any) {
       setError(err.message || "Login failed. Please try again.")
@@ -66,10 +61,7 @@ export default function LoginPage() {
 
     try {
       await loginWithGoogle()
-      
-      // TEST: Call auth-check endpoint to verify token works
       try {
-        // Wait a bit for auth state to update
         await new Promise(resolve => setTimeout(resolve, 500))
         const token = await getIdToken()
         if (token) {
@@ -92,11 +84,8 @@ export default function LoginPage() {
       } catch (authCheckError) {
         console.error("❌ AUTH CHECK ERROR:", authCheckError)
       }
-      
-      // On success, redirect to home
       router.replace("/dashboard")
     } catch (err: any) {
-      // Handle popup-blocked error specifically
       if (err.code === "auth/popup-blocked" || err.message?.includes("popup-blocked")) {
         setError("Popup was blocked. Please allow popups for this site and try again.")
       } else if (err.code === "auth/popup-closed-by-user" || err.message?.includes("popup-closed")) {
@@ -110,7 +99,6 @@ export default function LoginPage() {
 
   return (
     <main className="min-h-screen flex items-center justify-center p-6 bg-background relative overflow-hidden">
-      {/* Background Watermark */}
       <div className="absolute inset-0 pointer-events-none opacity-[0.02] flex items-center justify-center">
         <MindSageLogo size={600} />
       </div>

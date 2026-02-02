@@ -7,7 +7,6 @@ import "./globals.css"
 export const metadata: Metadata = {
   title: "MindSage",
   description: "A sanctuary for the mind, built for the moments between",
-  // Icon is handled by app/icon.tsx (Next.js App Router)
   icons: {
     icon: "/icon.svg",
     apple: "/apple-icon.png",

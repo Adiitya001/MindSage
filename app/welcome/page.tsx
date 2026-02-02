@@ -13,7 +13,6 @@ export default function WelcomeJourney() {
   const { resolvedTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
 
-  // Avoid hydration mismatch
   useEffect(() => {
     setMounted(true)
   }, [])
@@ -24,7 +23,7 @@ export default function WelcomeJourney() {
   })
 
   const lightColors = [
-    "oklch(0.99 0.002 240)", // Soft off-white (matches --background)
+    "oklch(0.99 0.002 240)",
     "oklch(0.96 0.02 240)",
     "oklch(0.95 0.03 260)",
     "oklch(0.96 0.02 240)",
@@ -32,7 +31,7 @@ export default function WelcomeJourney() {
   ]
 
   const darkColors = [
-    "oklch(0.1 0.01 240)", // Immersive midnight charcoal (matches --background)
+    "oklch(0.1 0.01 240)",
     "oklch(0.12 0.02 240)",
     "oklch(0.13 0.03 260)",
     "oklch(0.12 0.02 240)",

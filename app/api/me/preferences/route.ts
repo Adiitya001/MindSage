@@ -17,15 +17,10 @@ export async function PATCH(req: NextRequest) {
     const body = await req.json()
     const validatedData = updateUserPreferencesSchema.parse(body)
 
-    // Update user document in Firestore
     const userRef = adminDb.collection("users").doc(user.id)
     await userRef.update(validatedData)
-
-    // Fetch updated user
     const updatedDoc = await userRef.get()
     const userData = updatedDoc.data()
-
-    // Handle Firestore Timestamp serialization
     let createdAt = null
     if (userData?.createdAt) {
       if (userData.createdAt.toDate && typeof userData.createdAt.toDate === "function") {

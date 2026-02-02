@@ -20,8 +20,6 @@ export async function GET(
     }
 
     const data = therapistDoc.data()
-
-    // Only return active therapists
     if (!data?.isActive) {
       return NextResponse.json(
         { error: "Therapist not found" },

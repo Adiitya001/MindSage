@@ -5,7 +5,6 @@ import { createTherapistSchema } from "@/lib/validations"
 
 export async function GET() {
   try {
-    // Only return active therapists
     const therapistsSnapshot = await adminDb
       .collection("therapists")
       .where("isActive", "==", true)
@@ -30,7 +29,6 @@ export async function GET() {
     return NextResponse.json(therapists)
   } catch (error: any) {
     console.error("Error fetching therapists:", error)
-    // Return empty array on error instead of 500 to prevent UI breakage
     return NextResponse.json([])
   }
 }

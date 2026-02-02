@@ -1,14 +1,8 @@
 import { NextRequest, NextResponse } from "next/server"
 import { adminAuth } from "@/lib/firebase/admin"
 
-/**
- * Simple auth check endpoint - verifies Firebase ID token only
- * NO profile creation, NO Firestore access, NO user data
- * Just token verification
- */
 export async function GET(req: NextRequest) {
   try {
-    // Get the authorization header
     const authHeader = req.headers.get("authorization")
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
       return NextResponse.json(
@@ -25,11 +19,7 @@ export async function GET(req: NextRequest) {
       )
     }
 
-    // Verify the Firebase ID token ONLY
-    // This is the core auth check - no Firestore, no profile creation
     const decodedToken = await adminAuth.verifyIdToken(idToken)
-    
-    // Return success with minimal info
     return NextResponse.json({
       success: true,
       uid: decodedToken.uid,
@@ -38,8 +28,6 @@ export async function GET(req: NextRequest) {
     })
   } catch (error: any) {
     console.error("Auth check error:", error)
-    
-    // Return specific error for debugging
     if (error.code === "auth/id-token-expired") {
       return NextResponse.json(
         { error: "Token expired", code: error.code },
