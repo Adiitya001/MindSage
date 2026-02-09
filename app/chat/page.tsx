@@ -1,13 +1,32 @@
-import { ProtectedRoute } from "@/lib/components/ProtectedRoute"
+"use client"
 
-function ChatPageContent({ chatUrl }: { chatUrl: string | undefined }) {
+import { useEffect, useState } from "react"
+import { ProtectedRoute } from "@/lib/components/ProtectedRoute"
+import dynamic from "next/dynamic"
+
+function ChatContent() {
+  const [chatUrl, setChatUrl] = useState<string | null>(null)
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    if (typeof window === "undefined") return
+    setMounted(true)
+    const url = process.env.NEXT_PUBLIC_BOTPRESS_CHAT_URL
+    setChatUrl(url || null)
+  }, [])
+
+  if (!mounted) {
+    return (
+      <div className="flex min-h-screen w-full items-center justify-center bg-background">
+        <p className="text-sm text-muted-foreground">Eon is getting ready…</p>
+      </div>
+    )
+  }
+
   if (!chatUrl) {
     return (
-      <div
-        className="flex min-h-screen w-full items-center justify-center bg-background text-sm text-muted-foreground"
-        style={{ minHeight: "100vh" }}
-      >
-        Chat is not configured. Please restart your dev server after adding NEXT_PUBLIC_BOTPRESS_CHAT_URL to .env.local
+      <div className="flex min-h-screen w-full items-center justify-center bg-background text-sm text-muted-foreground">
+        Chat is not configured. Please add NEXT_PUBLIC_BOTPRESS_CHAT_URL to your environment variables.
       </div>
     )
   }
@@ -27,11 +46,14 @@ function ChatPageContent({ chatUrl }: { chatUrl: string | undefined }) {
   )
 }
 
+const ChatPageContent = dynamic(() => Promise.resolve(ChatContent), {
+  ssr: false,
+})
+
 export default function ChatPage() {
-  const chatUrl = process.env.NEXT_PUBLIC_BOTPRESS_CHAT_URL
   return (
     <ProtectedRoute>
-      <ChatPageContent chatUrl={chatUrl} />
+      <ChatPageContent />
     </ProtectedRoute>
   )
 }
