@@ -179,17 +179,11 @@
   }
 }
 
-/* Ensure the embedded Botpress webchat (Eon) fills its fullscreen container */
+
+/* The embedded Botpress webchat (Eon) renders in a Shadow DOM, so its visual
+   theme is injected via `additionalStylesheet` in botpress.init() (see
+   app/chat/page.tsx). Here we only size its host container to fill the screen. */
 #bp-embedded-webchat {
   width: 100%;
   height: 100%;
-}
-
-#bp-embedded-webchat .bpWebchat,
-#bp-embedded-webchat .bpFab {
-  width: 100% !important;
-  height: 100% !important;
-  max-height: 100% !important;
-  inset: 0 !important;
-  border-radius: 0 !important;
 }
