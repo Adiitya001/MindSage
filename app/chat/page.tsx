@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { ProtectedRoute } from "@/lib/components/ProtectedRoute"
+import { Navigation } from "@/components/navigation"
 import dynamic from "next/dynamic"
 
 // Official Botpress embed scripts. `inject.js` must load first; the bot-specific
@@ -68,24 +69,36 @@ function ChatContent() {
 
   if (status === "error") {
     return (
-      <div className="flex min-h-screen w-full items-center justify-center bg-background px-6 text-center text-sm text-muted-foreground">
-        Eon couldn&apos;t load right now. This can happen if a browser extension
-        or ad blocker is blocking botpress.cloud. Please disable it for this site,
-        then refresh.
+      <div className="min-h-screen w-full bg-background">
+        <div className="flex min-h-screen w-full items-center justify-center px-6 pb-28 text-center text-sm text-muted-foreground">
+          Eon couldn&apos;t load right now. This can happen if a browser extension
+          or ad blocker is blocking botpress.cloud. Please disable it for this
+          site, then refresh.
+        </div>
+        <Navigation />
       </div>
     )
   }
 
   return (
-    <div className="fixed inset-0 h-screen w-screen overflow-hidden bg-background">
-      {status === "loading" && (
-        <div className="absolute inset-0 z-10 flex items-center justify-center">
-          <p className="text-sm text-muted-foreground">Eon is getting ready…</p>
-        </div>
-      )}
-      {/* Botpress renders the embedded webchat into this element. */}
-      <div id={EMBED_ID} className="h-full w-full" />
-    </div>
+    <>
+      {/* The webchat fills the screen but stops above the floating nav so the
+          chat input never sits underneath it. */}
+      <div className="fixed inset-x-0 top-0 bottom-24 overflow-hidden bg-background">
+        {status === "loading" && (
+          <div className="absolute inset-0 z-10 flex items-center justify-center">
+            <p className="text-sm text-muted-foreground">Eon is getting ready…</p>
+          </div>
+        )}
+        {/* Botpress renders the embedded webchat into this element. */}
+        <div id={EMBED_ID} className="h-full w-full" />
+      </div>
+
+      {/* Background fill behind the floating nav for a seamless look. */}
+      <div className="fixed inset-x-0 bottom-0 h-24 bg-background" />
+
+      <Navigation />
+    </>
   )
 }
 
